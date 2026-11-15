@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>書体の見本</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=M+PLUS+2:wght@400;500;700&family=BIZ+UDPGothic:wght@400;700&family=Murecho:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&family=Kiwi+Maru:wght@400;500&family=Noto+Serif+JP:wght@400;500;700&family=Shippori+Mincho:wght@400;500;700&family=Zen+Old+Mincho:wght@400;600;700&family=Kaisei+Opti:wght@400;500;700&family=Hina+Mincho&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/common.css?v=6">
+<style>
+:root { --ink: #16243A; --ink-2: #56647A; --line: #DCE3EC; --bg: #FFFFFF; --ao: #0D67B6; }
+body { background: var(--bg); color: var(--ink); font-family: system-ui, sans-serif; }
+.head { padding: 48px 40px 24px; }
+.head h1 { font-size: 22px; font-weight: 700; }
+.head p { margin-top: 10px; font-size: 14px; line-height: 1.9; color: var(--ink-2); }
+.list { padding: 0 40px 100px; }
+.item { display: grid; grid-template-columns: 220px 1fr; gap: 32px; padding: 40px 0; border-top: 1px solid var(--line); }
+.meta b { display: block; font-size: 28px; color: var(--ao); }
+.meta span { display: block; margin-top: 6px; font-size: 14px; font-weight: 600; }
+.meta small { display: block; margin-top: 4px; font-size: 12px; line-height: 1.7; color: var(--ink-2); }
+.meta .ng { color: #B3261E; font-weight: 700; }
+.big { font-size: clamp(28px, 3.6vw, 48px); line-height: 1.5; letter-spacing: .08em; }
+.big--bold { font-weight: 700; }
+.big--mid { font-weight: 500; }
+.body { max-width: 36em; margin-top: 16px; font-size: 15px; line-height: 2; letter-spacing: .05em; }
+@media (max-width: 767px) {
+  .head, .list { padding-left: 20px; padding-right: 20px; }
+  .item { grid-template-columns: 1fr; gap: 12px; }
+}
+</style>
+</head>
+<body>
+<header class="head">
+  <h1>書体の見本</h1>
+  <p>同じ文章を、12種類の書体で並べました。気に入った番号を教えてください（いくつでも）。<br>番号の下に「読み込めていません」と赤く出た書体は、この画面では本来の形で表示されていません。</p>
+</header>
+<main class="list" id="list"></main>
+<nav class="switcher" aria-label="デザイン案の切り替え"><a href="a.html">A</a><a href="b.html">B</a><a href="c.html">C</a><a href="fonts.html" aria-current="page">字</a></nav>
+<script>
+var fonts = [
+  ['Noto Sans JP', 'ゴシック', 'Googleの標準的なゴシック。癖がなく読みやすい', 500],
+  ['Zen Kaku Gothic New', 'ゴシック', '少し手書きのやわらかさがあるゴシック', 500],
+  ['M PLUS 2', 'ゴシック', '形がすっきりした現代的なゴシック', 500],
+  ['BIZ UDPGothic', 'ゴシック', '読みやすさ重視。役所・医療の資料でよく使われる', 700],
+  ['Murecho', 'ゴシック', '字面が大きく、力強いゴシック', 500],
+  ['Zen Maru Gothic', '丸ゴシック', '角が丸く、やさしい印象', 500],
+  ['Kiwi Maru', '丸ゴシック', '手書きに近い、温かみのある丸ゴシック', 500],
+  ['Noto Serif JP', '明朝', 'Googleの標準的な明朝。整っていて誠実な印象', 500],
+  ['Shippori Mincho', '明朝', '昔の活字のような、品のある明朝', 500],
+  ['Zen Old Mincho', '明朝', 'やわらかく上品な明朝', 600],
+  ['Kaisei Opti', '明朝', '線が細めで、すっきりした明朝', 500],
+  ['Hina Mincho', '明朝', '細く繊細な明朝', 400]
+];
+var list = document.getElementById('list');
+fonts.forEach(function (f, i) {
+  var el = document.createElement('section');
+  el.className = 'item';
+  el.innerHTML =
+    '<div class="meta"><b>' + (i + 1) + '</b><span>' + f[0] + '</span><small>' + f[1] + '｜' + f[2] + '</small><small class="st"></small></div>' +
+    '<div style="font-family:\'' + f[0] + '\'">' +
+      '<p class="big" style="font-weight:' + f[3] + '">内視鏡検査を、もっと身近に。</p>' +
+      '<p class="body">胃カメラと大腸カメラを1日で。下剤を飲まない方法や、鎮静剤を使った検査にも対応しています。札幌駅から徒歩7分、あお内科・内視鏡クリニック。</p>' +
+    '</div>';
+  list.appendChild(el);
+});
+document.fonts.ready.then(function () {
+  setTimeout(function () {
+    document.querySelectorAll('.item').forEach(function (el, i) {
+      // 本来の書体で描いた幅と、代わりの書体だけで描いた幅を比べる（同じなら読み込めていない）
+      var c = document.createElement('canvas').getContext('2d'), s = 'Hamburgefonstiv 0123456789 WEB';
+      c.font = '500 40px monospace'; var w0 = c.measureText(s).width;
+      c.font = '500 40px "' + fonts[i][0] + '", monospace'; var w1 = c.measureText(s).width;
+      c.font = '500 40px serif'; var w2 = c.measureText(s).width;
+      c.font = '500 40px "' + fonts[i][0] + '", serif'; var w3 = c.measureText(s).width;
+      var ok = w0 !== w1 || w2 !== w3;
+      var st = el.querySelector('.st');
+      if (!ok) { st.textContent = '読み込めていません'; st.classList.add('ng'); }
+    });
+  }, 1500);
+});
+</script>
+</body>
+</html>
