@@ -327,6 +327,9 @@ main section h2, .gap p, h3, .qa__answer h3, .doc h2 { font-weight: 800 !importa
 .statement > div::before, .gap p::before, .cta h2::before, .qa__answer h3::before { content: ""; position: absolute; left: 50%; top: 50%; z-index: -1; width: 150%; height: 220%; transform: translate(-50%, -50%); background: radial-gradient(ellipse at center, rgba(255, 255, 255, .38), rgba(170, 215, 240, .18) 38%, transparent 68%); filter: blur(14px); pointer-events: none; }
 .qa__answer h3::before { left: 0; transform: translate(-12%, -50%); width: 130%; }
 .statement, .gap p, .cta h2, .qa__answer h3 { text-shadow: 0 0 16px rgba(255, 255, 255, .75), 0 0 44px rgba(140, 205, 227, .6), 0 2px 10px rgba(0, 0, 0, .35); }
+/* ライトのぼかしが画面の外へ広がっても、横スクロール（スマホで右に出る謎の余白）にならないように */
+main { overflow-x: clip; }
+.gap p { max-width: calc(100vw - 32px); }
 /* ことばの書体（Shippori Antique）は太さが1種類しかないので、輪郭を少し太らせる */
 .kv h1 { -webkit-text-stroke: .035em #15181F; }
 html.fv-lock { overflow: hidden; }
