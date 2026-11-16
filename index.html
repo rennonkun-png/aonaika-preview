@@ -594,7 +594,21 @@ html.fv-lock { overflow: hidden; }
 <script>
 (function () {
   var hero = document.querySelector('.hero');
-  if (!hero || matchMedia('(prefers-reduced-motion: reduce)').matches) { var v0 = document.querySelector('.stage__bg video'); if (v0) v0.play().catch(function () {}); return; }
+  var bgv = document.querySelector('.stage__bg video');
+  function playBg(fromStart) {
+    if (!bgv) return;
+    bgv.muted = true; bgv.defaultMuted = true; bgv.playsInline = true; bgv.setAttribute('muted', ''); bgv.setAttribute('playsinline', '');
+    if (fromStart) { try { bgv.currentTime = 0; } catch (e) {} }
+    var p = bgv.play();
+    if (p && p.catch) p.catch(function () {
+      // 省電力モードなどで自動再生が止められたとき：最初の操作（タッチ・クリック・スクロール）で再生し直す
+      var once = function () { ['touchstart', 'touchend', 'pointerdown', 'click', 'keydown', 'scroll'].forEach(function (t) { window.removeEventListener(t, once, true); }); bgv.play().catch(function () {}); };
+      ['touchstart', 'touchend', 'pointerdown', 'click', 'keydown', 'scroll'].forEach(function (t) { window.addEventListener(t, once, true); });
+    });
+  }
+  window.__playBg = playBg;
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && bgv && bgv.currentTime > 0 && bgv.paused) bgv.play().catch(function () {}); });
+  if (!hero || matchMedia('(prefers-reduced-motion: reduce)').matches) { playBg(false); return; }
   var started = false, burst = false;
   document.documentElement.classList.add('fv-lock'); window.scrollTo(0, 0);   // モーションが終わるまでスクロールを止める
   var unlock = function () { document.documentElement.classList.remove('fv-lock'); };
@@ -661,7 +675,7 @@ html.fv-lock { overflow: hidden; }
     add(tl, hero.querySelector('.kv__label'), 'is-on');
     add(tl + 800, hero, 'p-gather');             // 全部出そろったら、すぐパッと消え始める
     add(tl + 2400, hero, 'p-reveal');            // ことばまで消えたら、紙が薄れて動画が現れる
-    setTimeout(function () { var v = document.querySelector('.stage__bg video'); if (v) { try { v.currentTime = 0; } catch (e) {} v.play().catch(function () {}); } }, tl + 2400);   // 動画はここで初めて、廊下を歩く足元から
+    setTimeout(function () { playBg(true); }, tl + 2400);   // 動画はここで初めて、廊下を歩く足元から（スマホで止められたら、最初のタッチで再生）
     var tf = tl + 2700;                          // 動画が見え始めたら、ことばを最初と同じく1文字ずつ
     setTimeout(function () { chars.forEach(function (c) { c.classList.remove('is-on'); }); hero.querySelector('.kv__label').classList.remove('is-on'); hero.classList.add('p-final'); }, tf);
     chars.forEach(function (c, k) { add(tf + 150 + k * 65, c, 'is-on'); });
